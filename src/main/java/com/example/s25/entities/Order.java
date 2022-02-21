@@ -19,6 +19,7 @@ import javax.persistence.Table;
 
 import com.example.s25.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table (name = "tb_order")
@@ -42,6 +43,7 @@ public class Order implements Serializable{
 	private Set<OrderItem> items = new HashSet<>();
 	
 	@OneToOne (mappedBy = "order", cascade = CascadeType.ALL)
+	@JsonIgnore
 	private Payment payment;
 	
 	public Order() {}
@@ -95,6 +97,14 @@ public class Order implements Serializable{
 
 	public void setClient(User client) {
 		this.client = client;
+	}
+	
+	public Double getTotal() {
+		double total=0.0;
+		for (OrderItem x:items) {
+			total+=x.getSubTotal();
+		}
+		return total;
 	}
 
 	@Override
